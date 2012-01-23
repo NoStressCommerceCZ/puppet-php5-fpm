@@ -67,7 +67,7 @@ class php5-fpm {
 	    		default => $content,
 	  	}
 
-		file { "/etc/php5/fpm/fpm.d/${order}-${name}.conf":
+		file { "/etc/php5/fpm/pool.d/${order}-${name}.conf":
 			ensure => $ensure,
 			content => $real_content,
 			mode => 644,
