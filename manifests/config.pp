@@ -22,15 +22,31 @@
 #    }
 #
 
-define php5-fpm::config ( $ensure = 'present', $content = '', $order='500') {
+define php5-fpm::config ( $ensure = 'present', $content = '', $order='500', $poolname = '', $owner = '', $groupowner = '' ) {
+
+    $real_owner = $owner ? {
+	    ''          => "www-data",
+	    default     => $owner,
+    }
+
+    $real_groupowner = $groupowner ? {
+	    ''          => $real_owner,
+	    default     => $groupowner,
+    }
+
+    $real_poolname = $owner ? {
+	    ''          => "www",
+	    default     => $real_owner,
+    }
+
     $real_content = $content ? {
-        ''          => template("php5-fpm/pool.d/${name}.conf.erb"),
+        ''          => "php5-fpm/pool.d/${name}.conf.erb",
         default     => $content,
     }
 
     file { "/etc/php5/fpm/pool.d/${order}-${name}.conf":
         ensure  => $ensure,
-        content => $real_content,
+        content => template("${real_content}"),
         mode    => '0644',
         owner   => root,
         group   => root,
@@ -39,7 +55,7 @@ define php5-fpm::config ( $ensure = 'present', $content = '', $order='500') {
     }
 
     # Cleans up configs not managed by php5-fpm module
-    exec { 'cleanup-pool':
+    exec { "cleanup-pool-${name}":
         cwd     => '/etc/php5/fpm/pool.d',
         path    => "/usr/bin:/usr/sbin:/bin",
         command => "find -name '[^0-9]*.conf' -exec rm {} +",

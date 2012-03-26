@@ -1,7 +1,7 @@
 ; Start a new pool named 'www'
 ; The name is used in logs and stats
 ; There is no limitation of the number of pool FPM can handle. Your system will tell you anyway :)
-[www]
+[<%= real_poolname %>]
 
 ; Address to accept fastcgi requests on.
 ; Valid syntaxes are:
@@ -10,8 +10,11 @@
 ; - '/path/to/unix/socket' to listen on a unix socket
 ; it's mandatory
 ;
-;listen = /var/run/php5-fpm.sock
+<% if owner != "" -%>
+listen = /var/run/php5-fpm-<%= real_owner %>.sock
+<% else -%>
 listen = 127.0.0.1:9000
+<% end -%>
 
 ; Set listen(2) backlog
 ; -1 means unlimited
@@ -39,8 +42,8 @@ listen = 127.0.0.1:9000
 ; Unix user/group of processes
 ; The user is mandatory. If the group is not set, the default user's group
 ; will be used
-user = www-data
-group = www-data
+user = <%= real_owner %>
+group = <%= real_groupowner %>
 
 ; Choose the process manager which control how processes are managed
 ; Two choices:
