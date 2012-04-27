@@ -9,7 +9,7 @@
 # Templates:
 #    - php-fpm.conf.erb
 #
-class php5-fpm {
+class php5-fpm ( $template_phpini='php5-fpm/php.ini.erb' ) {
 
     package { 'php5-fpm': ensure => installed }
 
@@ -28,5 +28,13 @@ class php5-fpm {
         mode    => '0644',
         content => template('php5-fpm/php-fpm.conf.erb'),
         require => Package['php5-fpm'],
+    }
+
+    file { '/etc/php5/fpm/php.ini':
+        ensure  => present,
+        owner   => root,
+        group   => root,
+        mode    => '0644',
+        content => template("${template_phpini}"),
     }
 }
