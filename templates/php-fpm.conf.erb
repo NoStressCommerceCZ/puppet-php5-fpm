@@ -1,1 +1,4 @@
 include=/etc/php5/fpm/pool.d/*.conf
+
+; Added to ensure php, html, and php5 files can be processed without error
+security.limit_extensions = .php .html .php5
